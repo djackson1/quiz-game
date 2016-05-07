@@ -10,15 +10,13 @@ import com.badlogic.gdx.math.Vector2;
 
 public class SceneMenu {
 
-    //    Texture btn_a;
     Sprite btn_a_sprite;
-
-    //    Texture btn_game;
     Sprite btn_game_sprite;
 
     Sprite btn_physics;
 
-    final float PIXELS_TO_METERS = 100f;
+
+    Sprite btn_play_game;
 
     SceneMenu(){
         Gdx.app.log("Menu", "Created an instance of Menu");
@@ -26,6 +24,10 @@ public class SceneMenu {
 
         //Btn styles
         float menu_btn_width = Game.WORLD_WIDTH * 0.5f;
+
+        btn_play_game = new Sprite(new Texture("btn-play_game.png"));
+        btn_play_game.setSize(menu_btn_width, menu_btn_width * 0.25f);
+        btn_play_game.setPosition(Game.WORLD_WIDTH_HALF, Game.WORLD_HEIGHT_HALF);
 
 //        //Creating the [BTN a]
 //        btn_a_sprite = new Sprite(new Texture("btn-a.png"));
@@ -54,22 +56,22 @@ public class SceneMenu {
 
 
     void update(){
-        if(Gdx.input.justTouched()){
-            Vector2 touch = Game.getWorldCoords();
-
-            Rectangle box = btn_a_sprite.getBoundingRectangle();
-
-            Gdx.app.log("Menu.update", "Touch {"+touch.x+","+touch.y+"}");
-
-            Gdx.app.log("box","{x: "+Float.toString(box.getX()) + ", y: " + Float.toString(box.getY()) + ", w: "+Float.toString(box.getWidth()) + ", h: "+Float.toString(box.getHeight()) + "}");
-
-            if(btn_game_sprite.getBoundingRectangle().contains(touch.x, touch.y)){
-                Gdx.app.log("Menu.update", "User touched [BTN - a]");
-                Game.changeState(Game.STATE_GAME);
-            }else if(btn_physics.getBoundingRectangle().contains(touch.x, touch.y)){
-                Game.changeState(Game.STATE_PHYSICS);
-            }
-        }
+//        if(Gdx.input.justTouched()){
+//            Vector2 touch = Game.getWorldCoords();
+//
+//            Rectangle box = btn_a_sprite.getBoundingRectangle();
+//
+//            Gdx.app.log("Menu.update", "Touch {"+touch.x+","+touch.y+"}");
+//
+//            Gdx.app.log("box","{x: "+Float.toString(box.getX()) + ", y: " + Float.toString(box.getY()) + ", w: "+Float.toString(box.getWidth()) + ", h: "+Float.toString(box.getHeight()) + "}");
+//
+//            if(btn_game_sprite.getBoundingRectangle().contains(touch.x, touch.y)){
+//                Gdx.app.log("Menu.update", "User touched [BTN - a]");
+//                Game.changeState(Game.STATE_GAME);
+//            }else if(btn_physics.getBoundingRectangle().contains(touch.x, touch.y)){
+//                Game.changeState(Game.STATE_PHYSICS);
+//            }
+//        }
     }
 
     void render(SpriteBatch batch){
@@ -85,6 +87,8 @@ public class SceneMenu {
 
 //        Game.drawSpriteX(batch, btn_game_sprite);
 //        Game.drawSpriteX(batch, btn_physics);
+
+        Game.drawSpriteX(batch, btn_play_game);
 
     }
 }
