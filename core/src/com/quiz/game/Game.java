@@ -34,8 +34,8 @@ public class Game extends ApplicationAdapter {
 	static SceneGame game;
 //	static ScenePhysics physics;
 
-	static int STATE_MENU = 0;
-	static int STATE_GAME = 1;
+	public static int STATE_MENU = 0;
+	public static int STATE_GAME = 1;
 	static int STATE_PHYSICS = 2;
 
 	SpriteBatch batch;
@@ -96,7 +96,15 @@ public class Game extends ApplicationAdapter {
 	}
 
 	public static void drawSpriteX(SpriteBatch batch, Sprite sprite) {
+		batch.setColor(1f, 1f, 1f, sprite.getColor().a);
 		batch.draw(sprite, sprite.getX() - sprite.getWidth()/2, sprite.getY() - sprite.getHeight()/2, sprite.getWidth(), sprite.getHeight());
+	}
+
+	public static boolean pointInsideSprite(Vector2 point, Sprite sprite){
+		Sprite s = new Sprite();
+		s.setSize(sprite.getWidth(), sprite.getHeight());
+		s.setPosition(sprite.getX()-sprite.getWidth()/2, sprite.getY()-sprite.getHeight()/2);
+		return s.getBoundingRectangle().contains(point.x, point.y);
 	}
 
 	@Override

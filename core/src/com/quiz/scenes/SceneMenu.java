@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.quiz.game.Game;
 
@@ -37,8 +38,16 @@ public class SceneMenu {
         if(Gdx.input.justTouched()){
             Vector2 touch = Game.getWorldCoords();
 
-            if(btn_play_game.getBoundingRectangle().contains(touch.x, touch.y)){
+            Gdx.app.log("MenuUpdate", "touch x/y: "+Float.toString(touch.x)+"/"+Float.toString(touch.y));
+            Rectangle box = btn_play_game.getBoundingRectangle();
+
+            Gdx.app.log("box","{x: "+Float.toString(box.getX()) + ", y: " + Float.toString(box.getY()) + ", w: "+Float.toString(box.getWidth()) + ", h: "+Float.toString(box.getHeight()) + "}");
+
+            if(Game.pointInsideSprite(touch, btn_play_game)){
                 //play game was pressed
+                Gdx.app.log("MenuUpdate", "Going to math-game-1 boyss!");
+
+                Game.changeState(Game.STATE_GAME);
             }
         }
     }
