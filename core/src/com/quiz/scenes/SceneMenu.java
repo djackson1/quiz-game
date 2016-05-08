@@ -17,7 +17,6 @@ public class SceneMenu {
         Gdx.app.log("Menu", "Created an instance of Menu");
 
 
-
         //Btn styles
         float menu_btn_width = Game.WORLD_WIDTH * 0.5f;
 
