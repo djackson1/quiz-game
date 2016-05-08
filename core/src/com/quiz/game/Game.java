@@ -9,15 +9,17 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
+import com.quiz.scenes.*;
+
 public class Game extends ApplicationAdapter {
 
 	//World size
-	static float WORLD_WIDTH;
-	static float WORLD_HEIGHT;
-	static float WORLD_WIDTH_HALF;
-	static float WORLD_HEIGHT_HALF;
+	public static float WORLD_WIDTH;
+	public static float WORLD_HEIGHT;
+	public static float WORLD_WIDTH_HALF;
+	public static float WORLD_HEIGHT_HALF;
 
-	static float WORLD_RATIO;
+	public static float WORLD_RATIO;
 
 
 	//Device screen size
@@ -78,11 +80,9 @@ public class Game extends ApplicationAdapter {
 
 		System.out.println("w: " + WORLD_WIDTH + "; h: " + WORLD_HEIGHT);
 		System.out.println("ratio: "+ WORLD_RATIO);
-
-
 	}
 
-	static Vector2 getWorldCoords(){
+	public static Vector2 getWorldCoords(){
 		Vector2 world = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 
 		world.x = (world.x / SCREEN_WIDTH) * WORLD_WIDTH;
@@ -91,11 +91,11 @@ public class Game extends ApplicationAdapter {
 		return world;
 	}
 
-	static void changeState(int newState){
+	public static void changeState(int newState){
 		state = newState;
 	}
 
-	static void drawSpriteX(SpriteBatch batch, Sprite sprite) {
+	public static void drawSpriteX(SpriteBatch batch, Sprite sprite) {
 		batch.draw(sprite, sprite.getX() - sprite.getWidth()/2, sprite.getY() - sprite.getHeight()/2, sprite.getWidth(), sprite.getHeight());
 	}
 
