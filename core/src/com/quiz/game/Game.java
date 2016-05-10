@@ -48,12 +48,15 @@ public class Game extends ApplicationAdapter {
 		SCREEN_WIDTH = Gdx.graphics.getWidth();
 		SCREEN_HEIGHT = Gdx.graphics.getHeight();
 
+		System.out.println("System w/h : "+Float.toString(SCREEN_WIDTH) + "/"+Float.toString(SCREEN_HEIGHT));
+
 		WORLD_RATIO = SCREEN_HEIGHT / SCREEN_WIDTH;
 
 		WORLD_WIDTH = 10;
 		WORLD_HEIGHT = WORLD_WIDTH * WORLD_RATIO;
 
 		WORLD_WIDTH_HALF = WORLD_WIDTH / 2;
+		WORLD_HEIGHT_HALF = WORLD_HEIGHT / 2;
 
 		//States
 		state = 0;
@@ -93,7 +96,7 @@ public class Game extends ApplicationAdapter {
 	}
 
 	static void drawSpriteX(SpriteBatch batch, Sprite sprite) {
-		batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
+		batch.draw(sprite, sprite.getX() - sprite.getWidth()/2, sprite.getY() - sprite.getHeight()/2, sprite.getWidth(), sprite.getHeight());
 	}
 
 	@Override
