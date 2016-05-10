@@ -1,6 +1,7 @@
 package com.quiz.scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -48,6 +49,10 @@ public class SceneMenu {
                 Gdx.app.log("MenuUpdate", "Going to math-game-1 boyss!");
 
                 Game.changeState(Game.STATE_GAME);
+
+                if(Gdx.input.isPeripheralAvailable(Input.Peripheral.Vibrator)){
+//                    Gdx.input.vibrate(2000);
+                }
             }
         }
     }

@@ -36,7 +36,7 @@ public class MathGame1 {
 
     public MathGame1(){
         // The width and height of the MG1 buttons
-        _btn_width = Game.WORLD_WIDTH * 200/1080; //also the height
+        _btn_width = Game.WORLD_WIDTH * 150/1080; //also the height
 
         mg1_btns = new Array<MG1_btn>();
 
@@ -94,6 +94,8 @@ public class MathGame1 {
 
     public void update(){
         Vector2 start = new Vector2(0.4f, 1f);
+
+        if(Gdx.input.justTouched()) Gdx.input.vibrate(100);
 
         for(int i=0; i<mg1_btns.size; i++) {
             mg1_btns.get(i).update();
