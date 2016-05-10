@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import com.quiz.scenes.*;
+import com.quiz.scenes.SceneGame;
 
 public class Game extends ApplicationAdapter {
 
@@ -32,11 +33,11 @@ public class Game extends ApplicationAdapter {
 
 	static SceneMenu menu;
 	static SceneGame game;
-//	static ScenePhysics physics;
+	static ScenePhysics physics;
 
 	public static int STATE_MENU = 0;
 	public static int STATE_GAME = 1;
-	static int STATE_PHYSICS = 2;
+	public static int STATE_PHYSICS = 2;
 
 	SpriteBatch batch;
 	Texture img;
@@ -65,7 +66,7 @@ public class Game extends ApplicationAdapter {
 
 		menu = new SceneMenu();
 		game = new SceneGame();
-//		physics = new ScenePhysics();
+		physics = new ScenePhysics();
 
 		//Setup the Helper class
 //		init();
@@ -124,6 +125,9 @@ public class Game extends ApplicationAdapter {
 		}else if(state == STATE_GAME){
 			game.update();
 			game.render(batch);
+		}else if(state == STATE_PHYSICS){
+			physics.update();
+			physics.render(batch);
 		}
 //		else if(state == STATE_PHYSICS){
 //			physics.update();
