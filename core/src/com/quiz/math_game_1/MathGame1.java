@@ -18,6 +18,8 @@ public class MathGame1 {
     public static Array<Sprite> btns_unclicked;
     public static Array<Sprite> btns_clicked;
 
+    public static Sprite btn_total_9;
+
     public static int btn_count = 3;
 
     public static Sprite btn_unclicked_1;
@@ -36,7 +38,7 @@ public class MathGame1 {
 
     public MathGame1(){
         // The width and height of the MG1 buttons
-        _btn_width = Game.WORLD_WIDTH * 150/1080; //also the height
+        _btn_width = Game.WORLD_WIDTH * 200/1080; //also the height
 
         mg1_btns = new Array<MG1_btn>();
 
@@ -68,6 +70,9 @@ public class MathGame1 {
 
             btns_clicked.add(btn_clicked);
         }
+
+        btn_total_9 = new Sprite(new Texture("math-game-1/total-9.png"));
+        btn_total_9.setSize(_btn_width, _btn_width);
     }
 
     public void addGrid(int w, int h){
@@ -95,7 +100,7 @@ public class MathGame1 {
     public void update(){
         Vector2 start = new Vector2(0.4f, 1f);
 
-        if(Gdx.input.justTouched()) Gdx.input.vibrate(100);
+//        if(Gdx.input.justTouched()) Gdx.input.vibrate(100);
 
         for(int i=0; i<mg1_btns.size; i++) {
             mg1_btns.get(i).update();
@@ -103,10 +108,10 @@ public class MathGame1 {
 
         if(_state_of_touch == 1){
             if(Gdx.input.isTouched()){
-                Gdx.app.log("MG1-update", "still touched ["+Float.toString(Gdx.input.getX())+","+Float.toString(Gdx.input.getY()));
+//                Gdx.app.log("MG1-update", "still touched ["+Float.toString(Gdx.input.getX())+","+Float.toString(Gdx.input.getY()));
             }else{
                 _state_of_touch = 0;
-                Gdx.app.log("MG1-update", "touch released");
+//                Gdx.app.log("MG1-update", "touch released");
 
                 for(int i=0; i<mg1_btns.size; i++) {
                     mg1_btns.get(i).reset();
@@ -114,7 +119,7 @@ public class MathGame1 {
             }
         }
         if(Gdx.input.justTouched()){
-            Gdx.app.log("MG1-update", "just touched");
+//            Gdx.app.log("MG1-update", "just touched");
             _state_of_touch = 1;
         }
 
@@ -130,8 +135,9 @@ public class MathGame1 {
     }
 
     public void render(SpriteBatch batch){
-
         Vector2 start = new Vector2(0.4f, 1f);
+
+        batch.draw(btn_total_9, Game.WORLD_WIDTH_HALF - btn_total_9.getWidth()/2, 11f, btn_total_9.getWidth(), btn_total_9.getHeight());
 
         for(int i=0; i<mg1_btns.size; i++){
             mg1_btns.get(i).render(batch);
