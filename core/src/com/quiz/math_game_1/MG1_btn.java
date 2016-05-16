@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 public class MG1_btn {
 
     int _state;
-    int _value;
+    public int _value;
 
     Vector2 _position;
 

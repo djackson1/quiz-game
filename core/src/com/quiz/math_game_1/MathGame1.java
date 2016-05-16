@@ -4,11 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.quiz.game.Game;
 
-import java.awt.Point;
 import java.util.Random;
 
 /**
@@ -73,14 +73,14 @@ public class MathGame1 {
         _width = w;
         _height = h;
 
-        mg1_btns = new MG1_btn[h][w];
+        mg1_btns = new MG1_btn[w][h];
 
-        for(int hh=0; hh<_height; hh++){
-            for(int ww=0; ww<_width; ww++){
+        for(int ww=0; ww<_width; ww++){
+            for(int hh=0; hh<_height; hh++) {
                 int n = random.nextInt(btn_count) + 1;
                 Gdx.app.log("math1", Integer.toString(n));
-                MG1_btn mg1_btn = new MG1_btn(_start_pos.x + ww*_btn_width, _start_pos.y + hh*_btn_width, n);
-                mg1_btns[hh][ww] = mg1_btn;
+                MG1_btn mg1_btn = new MG1_btn(_start_pos.x + ww * _btn_width, _start_pos.y + hh * _btn_width, n);
+                mg1_btns[ww][hh] = mg1_btn;
             }
         }
     }
@@ -94,14 +94,14 @@ public class MathGame1 {
         return touch;
     }
 
-    boolean pointIsntInsideArray(int px, int py, Array<Vector2> array){
+    boolean pointIsntInsideArray(int px, int py, Array<GridPoint2> array){
         for(int i=0; i<array.size; i++){
             if(array.get(i).x == px && array.get(i).y == py) return false;
         }
         return true;
     }
 
-    boolean isPointSecondToLastInArray(int px, int py, Array<Vector2> array){
+    boolean isPointSecondToLastInArray(int px, int py, Array<GridPoint2> array){
         if(array.size < 2) return false;
 
         return (array.get(array.size-2).x == px && array.get(array.size-2).y == py);
@@ -111,7 +111,7 @@ public class MathGame1 {
     // 0 = nothing
     // 1 = just touched
     // 2 = dragging
-    Array<Vector2> which_points = new Array<Vector2>();
+    Array<GridPoint2> which_points = new Array<GridPoint2>();
 
     public void update() {
 //        Gdx.input.vibrate(100);
@@ -122,68 +122,72 @@ public class MathGame1 {
             else{_state_of_touch = 0;}
         }
 
-
-
-//        _state_of_touch = Gdx.input.isTouched() ? 1 : 0;
-
-//        if(_state_of_touch == 0){ if(Gdx.input.justTouched()) _state_of_touch = 1; }
-//        else if(_state_of_touch == 1){ if(!Gdx.input.isTouched()) _state_of_touch = 0; }
-
         if(_state_of_touch == 2){
             if(which_points.size == 0){
                 //find any btn and add it
                 Vector2 touch = getTouchRelativeToBtns();
 
-                int tx = Math.round(touch.x - 0.5f);
-                int ty = Math.round(touch.y - 0.5f);
+                int tx = (int)touch.x;
+                int ty = (int)touch.y;
 
                 if(tx >= 0 && tx < _width && ty >= 0 && ty < _height){
-                    mg1_btns[ty][tx].activate();
-                    Vector2 p = new Vector2(tx, ty);
+                    mg1_btns[tx][ty].activate();
+                    GridPoint2 p = new GridPoint2(tx, ty);
                     which_points.add(p);
                 }
             }else {
                 //only adjacent btns
                 Vector2 touch = getTouchRelativeToBtns();
 
-                int tx = Math.round(touch.x - 0.5f);
-                int ty = Math.round(touch.y - 0.5f);
+                int tx = (int)touch.x;
+                int ty = (int)touch.y;
 
                 if (tx >= 0 && tx < _width && ty >= 0 && ty < _height) {
                     if (pointIsntInsideArray(tx, ty, which_points)) {
-                        Vector2 last_point = which_points.get(which_points.size - 1);
+                        GridPoint2 last_point = which_points.get(which_points.size - 1);
                         int rx = Math.abs(tx - Math.round(last_point.x));
                         int ry = Math.abs(ty - Math.round(last_point.y));
 
                         if ((rx == 0 && ry == 1) || (ry == 0 && rx == 1)) {
                             //btn is within 1
-                            mg1_btns[ty][tx].activate();
-                            Vector2 p = new Vector2(tx, ty);
+                            mg1_btns[tx][ty].activate();
+                            GridPoint2 p = new GridPoint2(tx, ty);
                             which_points.add(p);
                         }
                     } else if (isPointSecondToLastInArray(tx, ty, which_points)) {
-                        Vector2 point = which_points.get(which_points.size - 1);
-                        mg1_btns[Math.round(point.y - 0.5f)][Math.round(point.x - 0.5f)].reset();
+                        GridPoint2 point = which_points.get(which_points.size - 1);
+                        mg1_btns[point.x][point.y].reset();
                         which_points.pop();
                     }
                 }
             }
         }else if(_state_of_touch == 0){
             if(which_points.size > 0){
-                for(int y=0; y<_height; y++){for(int x=0; x<_width; x++){ mg1_btns[y][x].reset(); }}
-                which_points.clear();
+                //Count all the points
 
-                //New code, git status
-                Gdx.input.vibrate(200);
+                int count = 0;
+                for(int i=0; i<which_points.size; i++){
+                    int x = which_points.get(i).x;
+                    int y = which_points.get(i).y;
+
+                    count += mg1_btns[x][y]._value;
+                    mg1_btns[x][y].reset();
+                }
+
+                if(count != 9){
+                    Gdx.input.vibrate(500);
+                }
+
+                which_points.clear();
             }
         }
     }
     public void render(SpriteBatch batch){
         batch.draw(btn_total_9, Game.WORLD_WIDTH_HALF - btn_total_9.getWidth()/2, 11f, btn_total_9.getWidth(), btn_total_9.getHeight());
 
-        for(int h=0; h<_height; h++){
-            for(int w=0; w<_width; w++){
-                mg1_btns[h][w].render(batch);
+        for(int w=0; w<_width; w++){
+            for(int h=0; h<_height; h++) {
+                mg1_btns[w][h].render(batch);
             }
         }
     }
