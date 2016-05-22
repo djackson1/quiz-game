@@ -39,6 +39,8 @@ public class Game extends ApplicationAdapter {
 	public static int STATE_GAME = 1;
 	public static int STATE_PHYSICS = 2;
 
+
+
 	SpriteBatch batch;
 	Texture img;
 	public static Camera camera;
@@ -81,6 +83,8 @@ public class Game extends ApplicationAdapter {
 
 		System.out.println("w: " + WORLD_WIDTH + "; h: " + WORLD_HEIGHT);
 		System.out.println("ratio: "+ WORLD_RATIO);
+
+		Gdx.input.setCatchBackKey(true);
 	}
 
 	public static Vector2 getWorldCoords(){
@@ -94,6 +98,8 @@ public class Game extends ApplicationAdapter {
 
 	public static void changeState(int newState){
 		state = newState;
+
+		if(newState == 1) game.activate();
 	}
 
 	public static void drawSpriteX(SpriteBatch batch, Sprite sprite) {

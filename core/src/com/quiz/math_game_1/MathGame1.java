@@ -1,12 +1,14 @@
 package com.quiz.math_game_1;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.quiz.game.Game;
 
 import java.util.Random;
@@ -20,6 +22,10 @@ public class MathGame1 {
     public static Array<Sprite> btns_clicked;
     public static Sprite btn_total_9;
     public static int btn_count = 3;
+
+    static Vector2 timer_size;
+    static Vector2 timer_pos;
+    public static Sprite timer_overlay;
 
     MG1_btn[][] mg1_btns;
 
@@ -36,7 +42,24 @@ public class MathGame1 {
         // The width and height of the MG1 buttons
         _btn_width = Game.WORLD_WIDTH * 200/1080; //also the height
 
+        float overlay_width = Game.WORLD_WIDTH * 900/1080;
+        timer_size = new Vector2(overlay_width, overlay_width/9f);
+        timer_pos = new Vector2(Game.WORLD_WIDTH_HALF - timer_size.x/2, (Game.WORLD_HEIGHT - (overlay_width/9f) - 0.1f) - timer_size.y/2);
+        timer_overlay = new Sprite(new Texture("math-game-1/timer-overlay.png"));
+        timer_overlay.setSize(timer_size.x, timer_size.y);
+        timer_overlay.setPosition(Game.WORLD_WIDTH_HALF, Game.WORLD_HEIGHT - (overlay_width/9f) - 0.1f);
+
         setup_btns();
+    }
+
+    long _start_time = 0;
+    public void activate(){
+        //start the timer
+        _start_time = TimeUtils.nanoTime();
+    }
+
+    public void pause(){
+        _start_time = -1;
     }
 
     private void setup_btns(){
@@ -123,26 +146,17 @@ public class MathGame1 {
         }
 
         if(_state_of_touch == 2){
-            if(which_points.size == 0){
-                //find any btn and add it
-                Vector2 touch = getTouchRelativeToBtns();
+            Vector2 touch = getTouchRelativeToBtns();
 
-                int tx = (int)touch.x;
-                int ty = (int)touch.y;
+            int tx = (int)touch.x;
+            int ty = (int)touch.y;
 
-                if(tx >= 0 && tx < _width && ty >= 0 && ty < _height){
+            if(tx >= 0 && tx < _width && ty >= 0 && ty < _height){
+                if(which_points.size == 0){
                     mg1_btns[tx][ty].activate();
                     GridPoint2 p = new GridPoint2(tx, ty);
                     which_points.add(p);
-                }
-            }else {
-                //only adjacent btns
-                Vector2 touch = getTouchRelativeToBtns();
-
-                int tx = (int)touch.x;
-                int ty = (int)touch.y;
-
-                if (tx >= 0 && tx < _width && ty >= 0 && ty < _height) {
+                }else {
                     if (pointIsntInsideArray(tx, ty, which_points)) {
                         GridPoint2 last_point = which_points.get(which_points.size - 1);
                         int rx = Math.abs(tx - Math.round(last_point.x));
@@ -175,13 +189,33 @@ public class MathGame1 {
                 }
 
                 if(count != 9){
-                    Gdx.input.vibrate(500);
+                    Gdx.input.vibrate(300);
                 }
 
                 which_points.clear();
             }
         }
+
+
+        //Update timer
+        long cur_time = TimeUtils.nanoTime();
+        long time_diff = cur_time - _start_time;
+
+        long one_second = 1000000000;
+        long duration = one_second * 15;
+        _percentage = Math.max(1.0f - (time_diff+0.f) / (duration+0.f), 0.0f);
+        Gdx.app.log("%", Float.toString(_percentage));
+//        timer_overlay.setSize(8f * percentage, 2f);
+
+
+
+        if(Gdx.input.isKeyPressed(Input.Keys.BACK)){
+            this.pause();
+            Game.changeState(Game.STATE_MENU);
+        }
     }
+    float _percentage = 0f;
+
     public void render(SpriteBatch batch){
         batch.draw(btn_total_9, Game.WORLD_WIDTH_HALF - btn_total_9.getWidth()/2, 11f, btn_total_9.getWidth(), btn_total_9.getHeight());
 
@@ -190,5 +224,12 @@ public class MathGame1 {
                 mg1_btns[w][h].render(batch);
             }
         }
+
+//        Game.drawSpriteX(batch, timer_overlay);
+        batch.draw(timer_overlay.getTexture(),
+                0.5f, 15f,              //screen draw x/y
+                9f * _percentage, -1f,  //screen width/height
+                0f, 0f,                 //src x/y
+                _percentage, 1f);       //src w/h as a percentage of original texture
     }
 }

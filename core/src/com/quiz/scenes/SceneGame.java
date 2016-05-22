@@ -30,6 +30,10 @@ public class SceneGame {
         mg1.update();
     }
 
+    public void activate(){
+        mg1.activate();
+    }
+
     public void render(SpriteBatch batch){
         Gdx.gl.glClearColor(0.5f, 0.55f, 0.7f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
