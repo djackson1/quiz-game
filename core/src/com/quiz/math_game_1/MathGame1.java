@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.quiz.game.Game;
+import com.quiz.helper.Helper;
+import com.quiz.helper.Timer;
 
 import java.util.Random;
 
@@ -38,6 +40,12 @@ public class MathGame1 {
 
     Random random = new Random();
 
+    Timer timer;
+
+    Sprite gray_overlay;
+    Sprite start_message;
+    boolean show_start_message;
+
     public MathGame1(){
         // The width and height of the MG1 buttons
         _btn_width = Game.WORLD_WIDTH * 200/1080; //also the height
@@ -50,16 +58,23 @@ public class MathGame1 {
         timer_overlay.setPosition(Game.WORLD_WIDTH_HALF, Game.WORLD_HEIGHT - (overlay_width/9f) - 0.1f);
 
         setup_btns();
+
+        timer = new Timer();
+
+        gray_overlay = Helper.createSpriteAtCenter("math-game-1/gray-65.png", Game.WORLD_WIDTH_HALF, Game.WORLD_HEIGHT_HALF, Game.WORLD_WIDTH, Game.WORLD_HEIGHT);
+        float sm_width = Game.WORLD_WIDTH * 500 / 1080;
+        float sm_height = sm_width / 500 * 600;
+        start_message = Helper.createSpriteAtCenter("math-game-1/tap-to-start.png", Game.WORLD_WIDTH_HALF, Game.WORLD_HEIGHT_HALF, sm_width, sm_height );
+        show_start_message = true;
     }
 
-    long _start_time = 0;
     public void activate(){
         //start the timer
-        _start_time = TimeUtils.nanoTime();
+        timer.unpause();
     }
 
     public void pause(){
-        _start_time = -1;
+        timer.pause();
     }
 
     private void setup_btns(){
@@ -138,85 +153,85 @@ public class MathGame1 {
 
     public void update() {
 //        Gdx.input.vibrate(100);
+        timer.tick();
 
-        if(_state_of_touch == 0){ if(Gdx.input.justTouched()) _state_of_touch = 1; }
-        else if(_state_of_touch == 1 || _state_of_touch == 2){
-            if(Gdx.input.isTouched()){_state_of_touch = 2;}
-            else{_state_of_touch = 0;}
-        }
+        if(!show_start_message) {
+            if (_state_of_touch == 0) {
+                if (Gdx.input.justTouched()) _state_of_touch = 1;
+            } else if (_state_of_touch == 1 || _state_of_touch == 2) {
+                if (Gdx.input.isTouched()) {
+                    _state_of_touch = 2;
+                } else {
+                    _state_of_touch = 0;
+                }
+            }
 
-        if(_state_of_touch == 2){
-            Vector2 touch = getTouchRelativeToBtns();
+            if (_state_of_touch == 2) {
+                Vector2 touch = getTouchRelativeToBtns();
 
-            int tx = (int)touch.x;
-            int ty = (int)touch.y;
+                int tx = (int) touch.x;
+                int ty = (int) touch.y;
 
-            if(tx >= 0 && tx < _width && ty >= 0 && ty < _height){
-                if(which_points.size == 0){
-                    mg1_btns[tx][ty].activate();
-                    GridPoint2 p = new GridPoint2(tx, ty);
-                    which_points.add(p);
-                }else {
-                    if (pointIsntInsideArray(tx, ty, which_points)) {
-                        GridPoint2 last_point = which_points.get(which_points.size - 1);
-                        int rx = Math.abs(tx - Math.round(last_point.x));
-                        int ry = Math.abs(ty - Math.round(last_point.y));
+                if (tx >= 0 && tx < _width && ty >= 0 && ty < _height) {
+                    if (which_points.size == 0) {
+                        mg1_btns[tx][ty].activate();
+                        GridPoint2 p = new GridPoint2(tx, ty);
+                        which_points.add(p);
+                    } else {
+                        if (pointIsntInsideArray(tx, ty, which_points)) {
+                            GridPoint2 last_point = which_points.get(which_points.size - 1);
+                            int rx = Math.abs(tx - Math.round(last_point.x));
+                            int ry = Math.abs(ty - Math.round(last_point.y));
 
-                        if ((rx == 0 && ry == 1) || (ry == 0 && rx == 1)) {
-                            //btn is within 1
-                            mg1_btns[tx][ty].activate();
-                            GridPoint2 p = new GridPoint2(tx, ty);
-                            which_points.add(p);
+                            if ((rx == 0 && ry == 1) || (ry == 0 && rx == 1)) {
+                                //btn is within 1
+                                mg1_btns[tx][ty].activate();
+                                GridPoint2 p = new GridPoint2(tx, ty);
+                                which_points.add(p);
+                            }
+                        } else if (isPointSecondToLastInArray(tx, ty, which_points)) {
+                            GridPoint2 point = which_points.get(which_points.size - 1);
+                            mg1_btns[point.x][point.y].reset();
+                            which_points.pop();
                         }
-                    } else if (isPointSecondToLastInArray(tx, ty, which_points)) {
-                        GridPoint2 point = which_points.get(which_points.size - 1);
-                        mg1_btns[point.x][point.y].reset();
-                        which_points.pop();
                     }
                 }
-            }
-        }else if(_state_of_touch == 0){
-            if(which_points.size > 0){
-                //Count all the points
+            } else if (_state_of_touch == 0) {
+                if (which_points.size > 0) {
+                    //Count all the points
 
-                int count = 0;
-                for(int i=0; i<which_points.size; i++){
-                    int x = which_points.get(i).x;
-                    int y = which_points.get(i).y;
+                    int count = 0;
+                    for (int i = 0; i < which_points.size; i++) {
+                        int x = which_points.get(i).x;
+                        int y = which_points.get(i).y;
 
-                    count += mg1_btns[x][y]._value;
-                    mg1_btns[x][y].reset();
+                        count += mg1_btns[x][y]._value;
+                        mg1_btns[x][y].reset();
+                    }
+
+                    if (count != 9) {
+                        Gdx.input.vibrate(300);
+                    }
+
+                    which_points.clear();
                 }
-
-                if(count != 9){
-                    Gdx.input.vibrate(300);
-                }
-
-                which_points.clear();
             }
         }
-
-
-        //Update timer
-        long cur_time = TimeUtils.nanoTime();
-        long time_diff = cur_time - _start_time;
-
-        long one_second = 1000000000;
-        long duration = one_second * 15;
-        _percentage = Math.max(1.0f - (time_diff+0.f) / (duration+0.f), 0.0f);
-        Gdx.app.log("%", Float.toString(_percentage));
-//        timer_overlay.setSize(8f * percentage, 2f);
-
-
 
         if(Gdx.input.isKeyPressed(Input.Keys.BACK)){
             this.pause();
             Game.changeState(Game.STATE_MENU);
         }
+        if(Gdx.input.justTouched() && !timer.isRunning()){
+            timer.startTimer(15f);
+            show_start_message = false;
+        }
     }
-    float _percentage = 0f;
 
     public void render(SpriteBatch batch){
+
+
+
         batch.draw(btn_total_9, Game.WORLD_WIDTH_HALF - btn_total_9.getWidth()/2, 11f, btn_total_9.getWidth(), btn_total_9.getHeight());
 
         for(int w=0; w<_width; w++){
@@ -225,11 +240,17 @@ public class MathGame1 {
             }
         }
 
-//        Game.drawSpriteX(batch, timer_overlay);
+        float relative = 1f - timer.getPercentage();
+
         batch.draw(timer_overlay.getTexture(),
                 0.5f, 15f,              //screen draw x/y
-                9f * _percentage, -1f,  //screen width/height
+                9f * relative, -1f,  //screen width/height
                 0f, 0f,                 //src x/y
-                _percentage, 1f);       //src w/h as a percentage of original texture
+                relative, 1f);       //src w/h as a percentage of original texture
+
+        if(show_start_message){
+            Game.drawSpriteAtLL(batch, gray_overlay);
+            Game.drawSpriteAtLL(batch, start_message);
+        }
     }
 }

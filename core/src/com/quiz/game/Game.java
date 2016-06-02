@@ -99,20 +99,29 @@ public class Game extends ApplicationAdapter {
 	public static void changeState(int newState){
 		state = newState;
 
-		if(newState == 1) game.activate();
+		if(newState == STATE_MENU) menu = new SceneMenu();
+		else if(newState == STATE_GAME) game = new SceneGame();
 	}
 
-	public static void drawSpriteX(SpriteBatch batch, Sprite sprite) {
+//	public static void drawSpriteX(SpriteBatch batch, Sprite sprite) {
+//		batch.setColor(1f, 1f, 1f, sprite.getColor().a);
+//		batch.draw(sprite, sprite.getX() - sprite.getWidth()/2, sprite.getY() - sprite.getHeight()/2, sprite.getWidth(), sprite.getHeight());
+//	}
+
+	public static void drawSpriteAtLL(SpriteBatch batch, Sprite sprite){
 		batch.setColor(1f, 1f, 1f, sprite.getColor().a);
-		batch.draw(sprite, sprite.getX() - sprite.getWidth()/2, sprite.getY() - sprite.getHeight()/2, sprite.getWidth(), sprite.getHeight());
+		batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
+	}
+	public static boolean pointInsideSpriteLL(Vector2 point, Sprite sprite){
+		return sprite.getBoundingRectangle().contains(point.x, point.y);
 	}
 
-	public static boolean pointInsideSprite(Vector2 point, Sprite sprite){
-		Sprite s = new Sprite();
-		s.setSize(sprite.getWidth(), sprite.getHeight());
-		s.setPosition(sprite.getX()-sprite.getWidth()/2, sprite.getY()-sprite.getHeight()/2);
-		return s.getBoundingRectangle().contains(point.x, point.y);
-	}
+//	public static boolean pointInsideSprite(Vector2 point, Sprite sprite){
+//		Sprite s = new Sprite();
+//		s.setSize(sprite.getWidth(), sprite.getHeight());
+//		s.setPosition(sprite.getX()-sprite.getWidth()/2, sprite.getY()-sprite.getHeight()/2);
+//		return s.getBoundingRectangle().contains(point.x, point.y);
+//	}
 
 	@Override
 	public void render () {
