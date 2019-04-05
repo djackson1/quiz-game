@@ -10,7 +10,12 @@ public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize(new Game(), config);
+		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
+
+//		cfg.useGL20 = true;
+		cfg.useAccelerometer = true;
+		cfg.useCompass = true;
+
+		initialize(new Game(), cfg);
 	}
 }

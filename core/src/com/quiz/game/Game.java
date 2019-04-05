@@ -9,15 +9,18 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
+import com.quiz.scenes.*;
+import com.quiz.scenes.SceneGame;
+
 public class Game extends ApplicationAdapter {
 
 	//World size
-	static float WORLD_WIDTH;
-	static float WORLD_HEIGHT;
-	static float WORLD_WIDTH_HALF;
-	static float WORLD_HEIGHT_HALF;
+	public static float WORLD_WIDTH;
+	public static float WORLD_HEIGHT;
+	public static float WORLD_WIDTH_HALF;
+	public static float WORLD_HEIGHT_HALF;
 
-	static float WORLD_RATIO;
+	public static float WORLD_RATIO;
 
 
 	//Device screen size
@@ -30,11 +33,13 @@ public class Game extends ApplicationAdapter {
 
 	static SceneMenu menu;
 	static SceneGame game;
-//	static ScenePhysics physics;
+	static ScenePhysics physics;
 
-	static int STATE_MENU = 0;
-	static int STATE_GAME = 1;
-	static int STATE_PHYSICS = 2;
+	public static int STATE_MENU = 0;
+	public static int STATE_GAME = 1;
+	public static int STATE_PHYSICS = 2;
+
+
 
 	SpriteBatch batch;
 	Texture img;
@@ -63,7 +68,7 @@ public class Game extends ApplicationAdapter {
 
 		menu = new SceneMenu();
 		game = new SceneGame();
-//		physics = new ScenePhysics();
+		physics = new ScenePhysics();
 
 		//Setup the Helper class
 //		init();
@@ -79,10 +84,10 @@ public class Game extends ApplicationAdapter {
 		System.out.println("w: " + WORLD_WIDTH + "; h: " + WORLD_HEIGHT);
 		System.out.println("ratio: "+ WORLD_RATIO);
 
-
+		Gdx.input.setCatchBackKey(true);
 	}
 
-	static Vector2 getWorldCoords(){
+	public static Vector2 getWorldCoords(){
 		Vector2 world = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 
 		world.x = (world.x / SCREEN_WIDTH) * WORLD_WIDTH;
@@ -91,13 +96,32 @@ public class Game extends ApplicationAdapter {
 		return world;
 	}
 
-	static void changeState(int newState){
+	public static void changeState(int newState){
 		state = newState;
+
+		if(newState == STATE_MENU) menu = new SceneMenu();
+		else if(newState == STATE_GAME) game = new SceneGame();
 	}
 
-	static void drawSpriteX(SpriteBatch batch, Sprite sprite) {
-		batch.draw(sprite, sprite.getX() - sprite.getWidth()/2, sprite.getY() - sprite.getHeight()/2, sprite.getWidth(), sprite.getHeight());
+//	public static void drawSpriteX(SpriteBatch batch, Sprite sprite) {
+//		batch.setColor(1f, 1f, 1f, sprite.getColor().a);
+//		batch.draw(sprite, sprite.getX() - sprite.getWidth()/2, sprite.getY() - sprite.getHeight()/2, sprite.getWidth(), sprite.getHeight());
+//	}
+
+	public static void drawSpriteAtLL(SpriteBatch batch, Sprite sprite){
+		batch.setColor(1f, 1f, 1f, sprite.getColor().a);
+		batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
 	}
+	public static boolean pointInsideSpriteLL(Vector2 point, Sprite sprite){
+		return sprite.getBoundingRectangle().contains(point.x, point.y);
+	}
+
+//	public static boolean pointInsideSprite(Vector2 point, Sprite sprite){
+//		Sprite s = new Sprite();
+//		s.setSize(sprite.getWidth(), sprite.getHeight());
+//		s.setPosition(sprite.getX()-sprite.getWidth()/2, sprite.getY()-sprite.getHeight()/2);
+//		return s.getBoundingRectangle().contains(point.x, point.y);
+//	}
 
 	@Override
 	public void render () {
@@ -116,6 +140,9 @@ public class Game extends ApplicationAdapter {
 		}else if(state == STATE_GAME){
 			game.update();
 			game.render(batch);
+		}else if(state == STATE_PHYSICS){
+			physics.update();
+			physics.render(batch);
 		}
 //		else if(state == STATE_PHYSICS){
 //			physics.update();
