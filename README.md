@@ -12,3 +12,10 @@ To run this app you will need a device that supports android.
 
 You will need to open in android studio, connect your device and build the application.
 
+## After thoughts (2021)
+
+These types of apps definitely get people hooked into competing to be the best.
+
+But this is not what we set out to design, not a leaderboard, but something to help the actual mind.
+
+It turns out we hadn't really thought much through about it so abandoned it during development, but it was still a huge insight into possibilities!
